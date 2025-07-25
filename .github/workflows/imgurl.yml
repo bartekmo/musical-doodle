@@ -44,9 +44,9 @@ jobs:
         id: git-status
         run: |
           if [ -n "$(git status --porcelain)" ]; then
-            echo "::set-output name=changes_detected::true"
+            echo "changes_detected=true" >> $GITHUB_OUTPUT
           else
-            echo "::set-output name=changes_detected::false"
+            echo "changes_detected=false" >> $GITHUB_OUTPUT
           fi
 
       - name: Create commit and push changes
