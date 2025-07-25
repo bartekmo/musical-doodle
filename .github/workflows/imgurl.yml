@@ -44,13 +44,13 @@ jobs:
         id: git-status
         run: |
           if [ -n "$(git status --porcelain)" ]; then
-            echo "changes_detected=true" >> "$GITHUB_OUTPUT"
+            echo "changes_detected=true" >> $GITHUB_OUTPUT
           else
-            echo "changes_detected=false" >> "$GITHUB_OUTPUT"
+            echo "changes_detected=false" >> $GITHUB_OUTPUT
           fi
 
       - name: Create commit and push changes
-        if: steps.git-status.outputs.changes_detected == 'true'
+        if: steps.git-status.outputs.changes_detected == true
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: "Automated: Convert relative image URLs to absolute"
