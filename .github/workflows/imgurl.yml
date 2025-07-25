@@ -37,7 +37,7 @@ jobs:
             # The regex looks for a markdown image tag with a path that does NOT start with 'http', 'https', or '/'
             # It captures the full path and prepends the base URL.
             # -i modifies the file in place.
-            sed -i -E "s#(!\[.*\])\(([^/][^(http)]*)\)#\1(${BASE_URL}\2)#g" "$file"
+            sed -i -E "s#(!\[.*\])\((?!http|https|\/)([^()]+)\)#\1(${BASE_URL}\2)#g" "$file"
           done
 
       - name: Check for changes
@@ -48,12 +48,6 @@ jobs:
           else
             echo "changes_detected=false" >> $GITHUB_OUTPUT
           fi
-
-      - name: blah
-        env:
-          TEST: ${{ steps.git-status.outputs.changes_detected }}
-        run: echo $TEST
-        
 
       - name: Create commit and push changes
         if: steps.git-status.outputs.changes_detected == true
