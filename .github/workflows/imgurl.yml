@@ -49,6 +49,12 @@ jobs:
             echo "changes_detected=false" >> $GITHUB_OUTPUT
           fi
 
+      - name: blah
+        env:
+          TEST: ${{ steps.git-status.outputs.changes_detected }}
+        run: echo $TEST
+        
+
       - name: Create commit and push changes
         if: steps.git-status.outputs.changes_detected == true
         uses: stefanzweifel/git-auto-commit-action@v5
