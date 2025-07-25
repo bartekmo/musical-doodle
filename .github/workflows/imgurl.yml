@@ -26,7 +26,8 @@ jobs:
           REPO_OWNER="${{ github.repository_owner }}"
           REPO_NAME="${{ github.event.repository.name }}"
           BRANCH_NAME="${{ github.event.inputs.branch }}"
-          BASE_URL="https://raw.githubusercontent.com/$REPO_OWNER/$REPO_NAME/$BRANCH_NAME/"
+          COMMIT_HASH="${{ github.sha }}"
+          BASE_URL="https://raw.githubusercontent.com/$REPO_OWNER/$REPO_NAME/$BRANCH_NAME/$COMMIT_HASH/"
 
           # Loop through all markdown files in the repository
           # and convert relative image paths.
