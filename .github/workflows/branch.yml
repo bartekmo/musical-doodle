@@ -30,7 +30,10 @@ jobs:
           REPO_OWNER="${{ github.repository_owner }}"
           REPO_NAME="${{ github.event.repository.name }}"
           BRANCH_NAME="${{ github.event.inputs.branch }}"
-          BASE_URL="https://raw.githubusercontent.com/$REPO_OWNER/$REPO_NAME/refs/heads/$BRANCH_NAME/"
+          COMMIT_HASH="${{ github.sha }}"
+          BASE_URL="https://raw.githubusercontent.com/$REPO_OWNER/$REPO_NAME/$COMMIT_HASH/"
+          #BASE_URL="https://raw.githubusercontent.com/$REPO_OWNER/$REPO_NAME/refs/heads/$BRANCH_NAME/"
+          #https://raw.githubusercontent.com/bartekmo/terraform-google-test-repo/6a52d64d429da331d0740273a679a12f36e5cb8f/modules/ha-active-passive/docs/diagram.png
 
           # Loop through all markdown files in the repository
           # and convert relative image paths.
