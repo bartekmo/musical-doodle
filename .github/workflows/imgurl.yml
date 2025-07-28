@@ -46,6 +46,12 @@ jobs:
             echo "changes_detected=false" >> $GITHUB_OUTPUT
           fi
 
+      - name: out
+        run: git status --porcelain
+
+      - name: file
+        run: cat README.md
+
       - name: Create commit and push changes
         if: steps.git-status.outputs.changes_detected == true
         uses: stefanzweifel/git-auto-commit-action@v5
