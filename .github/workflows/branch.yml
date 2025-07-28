@@ -1,0 +1,61 @@
+name: Convert Relative Image URLs to Absolute
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Branch to run the workflow on'
+        required: true
+        default: 'main'
+
+jobs:
+  update-images:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.inputs.branch }}
+
+      - name: branch out
+        run: git checkout -b testin123
+      
+      - name: Find and convert image URLs
+        id: convert-images
+        run: |
+          REPO_OWNER="${{ github.repository_owner }}"
+          REPO_NAME="${{ github.event.repository.name }}"
+          BRANCH_NAME="${{ github.event.inputs.branch }}"
+          BASE_URL="https://raw.githubusercontent.com/$REPO_OWNER/$REPO_NAME/refs/heads/$BRANCH_NAME/"
+
+          # Loop through all markdown files in the repository
+          # and convert relative image paths.
+          # The regex matches images in markdown files: ![alt text](relative/path/to/image.png)
+          find . -name "*.md" -type f -print0 | while IFS= read -r -d $'\0' file; do
+            # Use sed to find image tags and replace relative URLs
+            sed -i "s#\(\!\[.*\]\)(\([[:alnum:] \./_-]*\))#\1(${BASE_URL}\2)#g" $file
+          done
+
+      - name: Check for changes
+        id: git-status
+        run: |
+          if [ -n "$(git status --porcelain)" ]; then
+            echo "changes_detected=true" >> $GITHUB_OUTPUT
+          else
+            echo "changes_detected=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Create commit and push changes
+        if: steps.git-status.outputs.changes_detected == 'true'
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "Automated: Convert relative image URLs to absolute"
+
+      - name: Pull request
+        if: steps.git-status.outputs.changes_detected == 'true'
+        run: |
+          git push --set-upstream origin testin123
+          gh pr create --title "Automate links" --body "Images linked to absolute URL on GitHub"
