@@ -1,4 +1,4 @@
-name: Convert Relative Image URLs to Absolute
+name: Automate: absolute links via PR
 
 on:
   workflow_dispatch:
