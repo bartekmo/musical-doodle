@@ -44,8 +44,10 @@ jobs:
         run: |
           if [ -n "$(git status --porcelain)" ]; then
             echo "changes_detected=true" >> $GITHUB_OUTPUT
+            echo "Changes detected"
           else
             echo "changes_detected=false" >> $GITHUB_OUTPUT
+            echo "No changes"
           fi
 
       - name: Create commit and push changes
