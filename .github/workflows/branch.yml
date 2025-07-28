@@ -20,8 +20,8 @@ jobs:
         with:
           ref: ${{ github.event.inputs.branch }}
 
-      - name: branch out
-        run: git checkout -b testin123
+      # - name: branch out
+      #  run: git checkout -b testin123
       
       - name: Find and convert image URLs
         id: convert-images
@@ -50,17 +50,22 @@ jobs:
             echo "No changes"
           fi
 
-      - name: Create commit and push changes
-        if: steps.git-status.outputs.changes_detected == 'true'
-        uses: stefanzweifel/git-auto-commit-action@v5
+      - name: PR
+        uses: peter-evans/create-pull-request@v7
         with:
-          commit_message: "Automated: Convert relative image URLs to absolute"
-          branch: ${{ github.event.inputs.branch }}
-          push_options: '--set-upstream origin testing123'
+          base: ${{ github.event.inputs.branch }}
 
-      - name: Pull request
-        if: steps.git-status.outputs.changes_detected == 'true'
-        run: |
-          # git commit -a -m "Automation: update image URLs to absolute"
-          # git push --set-upstream origin testin123
-          gh pr create --title "Automate links" --body "Images linked to absolute URL on GitHub"
+#      - name: Create commit and push changes
+#        if: steps.git-status.outputs.changes_detected == 'true'
+#        uses: stefanzweifel/git-auto-commit-action@v5
+#        with:
+#          commit_message: "Automated: Convert relative image URLs to absolute"
+#          branch: ${{ github.event.inputs.branch }}
+#          push_options: '--set-upstream origin testing123'
+
+#      - name: Pull request
+#        if: steps.git-status.outputs.changes_detected == 'true'
+#        run: |
+#          # git commit -a -m "Automation: update image URLs to absolute"
+#          # git push --set-upstream origin testin123
+#          gh pr create --title "Automate links" --body "Images linked to absolute URL on GitHub"
