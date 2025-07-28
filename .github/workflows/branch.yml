@@ -1,4 +1,4 @@
-name: Automate: absolute links via PR
+name: Automate - absolute links via PR
 
 on:
   workflow_dispatch:
