@@ -34,10 +34,7 @@ jobs:
           # The regex matches images in markdown files: ![alt text](relative/path/to/image.png)
           find . -name "*.md" -type f -print0 | while IFS= read -r -d $'\0' file; do
             # Use sed to find image tags and replace relative URLs
-            # The regex looks for a markdown image tag with a path that does NOT start with 'http', 'https', or '/'
-            # It captures the full path and prepends the base URL.
-            # -i modifies the file in place.
-            perl -pi -e "s#(!\[.*\])\((?!http|https|\/)([^()]+)\)#\1(${BASE_URL}\2)#g" "$file"
+            sed -i "s#\(\!\[.*\]\)(\([[:alnum:] \./_-]*\))#\1(${BASE_URL}\2)#g" $file
           done
 
       - name: Check for changes
