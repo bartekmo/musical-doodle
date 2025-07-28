@@ -41,6 +41,7 @@ jobs:
           find . -name "*.md" -type f -print0 | while IFS= read -r -d $'\0' file; do
             # Use sed to find image tags and replace relative URLs
             sed -i "s#\(\!\[.*\]\)(\([[:alnum:] \./_-]*\))#\1(${BASE_URL}\2)#g" $file
+            # TODO: osobne podmianki dla linkow wzglednych (z dodaniem sciezki pliku md) i bezwzglednych (jak jest, tylko z zawezonym dopasowaniem)
           done
 
       - name: Check for changes
