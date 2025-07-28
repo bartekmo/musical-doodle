@@ -50,14 +50,9 @@ jobs:
             echo "No changes"
           fi
 
-      - name: Create commit and push changes
-        if: steps.git-status.outputs.changes_detected == 'true'
-        uses: stefanzweifel/git-auto-commit-action@v5
-        with:
-          commit_message: "Automated: Convert relative image URLs to absolute"
-
       - name: Pull request
         if: steps.git-status.outputs.changes_detected == 'true'
         run: |
+          git commit -a -m "Automation: update image URLs to absolute"
           git push --set-upstream origin testin123
           gh pr create --title "Automate links" --body "Images linked to absolute URL on GitHub"
