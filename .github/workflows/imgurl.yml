@@ -45,8 +45,6 @@ jobs:
           else
             echo "changes_detected=false" >> $GITHUB_OUTPUT
           fi
-        outputs:
-          changes_detected: ${{ steps.git-status.outputs.changes_detected }}
 
       - name: out
         run: git status --porcelain
@@ -55,7 +53,7 @@ jobs:
         run: cat README.md
 
       - name: Create commit and push changes
-        if: steps.git-status.outputs.changes_detected == true
+        if: steps.git-status.outputs.changes_detected == 'true'
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: "Automated: Convert relative image URLs to absolute"
