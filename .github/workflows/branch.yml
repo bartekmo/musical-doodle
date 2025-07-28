@@ -56,7 +56,7 @@ jobs:
         with:
           commit_message: "Automated: Convert relative image URLs to absolute"
           branch: ${{ github.event.inputs.branch }}
-          push_options: '--set upstream origin testing123'
+          push_options: '--set-upstream origin testing123'
 
       - name: Pull request
         if: steps.git-status.outputs.changes_detected == 'true'
