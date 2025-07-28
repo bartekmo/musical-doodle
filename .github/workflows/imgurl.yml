@@ -45,6 +45,8 @@ jobs:
           else
             echo "changes_detected=false" >> $GITHUB_OUTPUT
           fi
+        outputs:
+          changes_detected: ${{ steps.git-status.outputs.changes_detected }}
 
       - name: out
         run: git status --porcelain
