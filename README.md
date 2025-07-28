@@ -1,3 +1,3 @@
 # musical-doodle
 
-![test img](https://raw.githubusercontent.com/bartekmo/musical-doodle/main/img.png)
+![test img](img.png)
