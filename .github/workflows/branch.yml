@@ -7,6 +7,8 @@ on:
         description: 'Branch to run the workflow on'
         required: true
         default: 'main'
+env:
+  SUBDIR_MODULE_HAAPLB: "modules/fortigate/ha-active-passive"
 
 jobs:
   update-images:
@@ -16,7 +18,7 @@ jobs:
       pull-requests: write
     
     steps:
-      - name: Checkout repository
+      - name: Checkout base repository
         uses: actions/checkout@v3
         with:
           ref: ${{ github.event.inputs.branch }}
@@ -25,9 +27,9 @@ jobs:
         run: |
           git remote add fgt-ha-ap-lb https://github.com/fortinet/terraform-google-fgt-ha-ap-lb.git
           git fetch fgt-ha-ap-lb
-          git read-tree --prefix=modules/fortigate/ha-active-passive -u fgt-ha-ap-lb/main
+          git read-tree --prefix=$SUBDIR_MODULE_HAAPLB -u fgt-ha-ap-lb/main
       
-      - name: Find and convert image URLs
+      - name: Find markdown files and convert URLs in images
         id: convert-images
         run: |
           REPO_OWNER="${{ github.repository_owner }}"
@@ -48,6 +50,23 @@ jobs:
             # relative to full url
             CWD=`echo $file | sed "s|\.\(.*\)/[[:alnum:]\._ ]*|\1/|"`
             sed -i "s#\(\!\[.*\]\)(\([[:alnum:]\._][[:alnum:] \./_-]*\))#\1(${BASE_URL}${CWD}\2)#g" $file
+          done
+          
+      - name: Find and convert source values in code examples of imported fgt-ha-ap-lb
+        id: convert-module-source
+        run: |
+          REPO_OWNER="${{ github.repository_owner }}"
+          REPO_NAME="${{ github.event.repository.name }}"
+          BRANCH_NAME="${{ github.event.inputs.branch }}"
+          MODULE_TF_SRC="$REPO_OWNER/$REPO_NAME/google//$SUBDIR_MODULE_HAAPLB"
+
+          # Loop through all markdown and terraform files in the module
+          # and swap source addresses from git to tf registry.
+          
+          find $SUBDIR_MODULE_HAAPLB -type f \( -name "*.md" -o -name "*.tf" \) -print0 | while IFS= read -r -d $'\0' file; do
+            # Use sed to find image tags and replace relative URLs
+            # absolute to full url
+            sed -i "s#git::github.com/fortinet/terraform-google-fgt-ha-ap-lb#$MODULE_TF_SRC#g" $file
           done
 
       - name: Check for changes
