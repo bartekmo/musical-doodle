@@ -43,7 +43,8 @@ jobs:
             # absolute to full url
             sed -i "s#\(\!\[.*\]\)(\(/[[:alnum:] \./_-]*\))#\1(${BASE_URL}\2)#g" $file
             # relative to full url
-            sed -i "s#\(\!\[.*\]\)(\([[:alnum:]\._][[:alnum:] \./_-]*\))#\1(${BASE_URL}/\2)#g" $file
+            CWD=`echo $file | sed "s|\.\(.*\)/[[:alnum:]\._ ]*|\1/|"`
+            sed -i "s#\(\!\[.*\]\)(\([[:alnum:]\._][[:alnum:] \./_-]*\))#\1(${BASE_URL}${CWD}\2)#g" $file
           done
 
       - name: Check for changes
