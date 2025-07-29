@@ -31,7 +31,7 @@ jobs:
           REPO_NAME="${{ github.event.repository.name }}"
           BRANCH_NAME="${{ github.event.inputs.branch }}"
           COMMIT_HASH="${{ github.sha }}"
-          BASE_URL="https://raw.githubusercontent.com/$REPO_OWNER/$REPO_NAME/$COMMIT_HASH/"
+          BASE_URL="https://raw.githubusercontent.com/$REPO_OWNER/$REPO_NAME/$COMMIT_HASH"
           #BASE_URL="https://raw.githubusercontent.com/$REPO_OWNER/$REPO_NAME/refs/heads/$BRANCH_NAME/"
           #https://raw.githubusercontent.com/bartekmo/terraform-google-test-repo/6a52d64d429da331d0740273a679a12f36e5cb8f/modules/ha-active-passive/docs/diagram.png
 
@@ -40,8 +40,10 @@ jobs:
           # The regex matches images in markdown files: ![alt text](relative/path/to/image.png)
           find . -name "*.md" -type f -print0 | while IFS= read -r -d $'\0' file; do
             # Use sed to find image tags and replace relative URLs
-            sed -i "s#\(\!\[.*\]\)(\([[:alnum:] \./_-]*\))#\1(${BASE_URL}\2)#g" $file
-            # TODO: osobne podmianki dla linkow wzglednych (z dodaniem sciezki pliku md) i bezwzglednych (jak jest, tylko z zawezonym dopasowaniem)
+            # absolute to full url
+            sed -i "s#\(\!\[.*\]\)(\(/[[:alnum:] \./_-]*\))#\1(${BASE_URL}\2)#g" $file
+            # relative to full url
+            sed -i "s#\(\!\[.*\]\)(\([[:alnum:]\._][[:alnum:] \./_-]*\))#\1(${BASE_URL}/\2)#g" $file
           done
 
       - name: Check for changes
@@ -60,17 +62,3 @@ jobs:
         with:
           base: ${{ github.event.inputs.branch }}
 
-#      - name: Create commit and push changes
-#        if: steps.git-status.outputs.changes_detected == 'true'
-#        uses: stefanzweifel/git-auto-commit-action@v5
-#        with:
-#          commit_message: "Automated: Convert relative image URLs to absolute"
-#          branch: ${{ github.event.inputs.branch }}
-#          push_options: '--set-upstream origin testing123'
-
-#      - name: Pull request
-#        if: steps.git-status.outputs.changes_detected == 'true'
-#        run: |
-#          # git commit -a -m "Automation: update image URLs to absolute"
-#          # git push --set-upstream origin testin123
-#          gh pr create --title "Automate links" --body "Images linked to absolute URL on GitHub"
