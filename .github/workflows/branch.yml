@@ -21,8 +21,11 @@ jobs:
         with:
           ref: ${{ github.event.inputs.branch }}
 
-      # - name: branch out
-      #  run: git checkout -b testin123
+      - name: Copy in fortinet/terraform-google-fgt-ha-ap-lb
+        run: |
+          git remote add fgt-ha-ap-lb https://github.com/fortinet/terraform-google-fgt-ha-ap-lb.git
+          git fetch fgt-ha-ap-lb
+          git read-tree --prefix=modules/fortigate/ha-active-passive -u fgt-ha-ap-lb/main
       
       - name: Find and convert image URLs
         id: convert-images
