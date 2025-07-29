@@ -1,3 +1,3 @@
 # musical-doodle
 
-![test img](img.png)
+![test img](/img.png)
